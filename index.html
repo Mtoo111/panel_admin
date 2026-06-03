@@ -1,0 +1,1251 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Panel Administrativo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased}
+:root{
+  --bg:#0a0a0f;
+  --bg2:#111118;
+  --bg3:#18181f;
+  --bg4:#22222c;
+  --bg5:#2a2a38;
+  --accent:#5b6af0;
+  --accent-glow:#5b6af030;
+  --purple:#8b5cf6;
+  --cyan:#06d6d6;
+  --green:#22c55e;
+  --orange:#f97316;
+  --red:#ef4444;
+  --yellow:#eab308;
+  --text:#f0f0f8;
+  --text2:#9898b0;
+  --text3:#55556a;
+  --border:#ffffff0d;
+  --border2:#ffffff18;
+  --border3:#ffffff25;
+  --r:14px;--r2:10px;--r3:8px;--r4:6px;
+  --sidebar:240px;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Inter,sans-serif
+}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;min-height:100vh;overflow-x:hidden}
+
+/* ── LOGIN ── */
+#loginScreen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:999}
+.loginWrap{width:380px;max-width:95vw}
+.loginCard{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;padding:2.5rem;box-shadow:0 40px 80px #00000080}
+.loginBrand{text-align:center;margin-bottom:2rem}
+.loginIcon{width:64px;height:64px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:18px;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem;box-shadow:0 12px 32px var(--accent-glow)}
+.loginIcon i{font-size:28px;color:#fff}
+.loginTitle{font-size:20px;font-weight:700;letter-spacing:-.4px}
+.loginSub{font-size:13px;color:var(--text2);margin-top:4px;font-weight:400}
+.fGroup{margin-bottom:1rem}
+.fGroup label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.fGroup input{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r3);padding:12px 14px;color:var(--text);font-size:14px;font-family:var(--font);outline:none;transition:border .2s,box-shadow .2s}
+.fGroup input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.btnLogin{width:100%;background:linear-gradient(135deg,var(--accent),var(--purple));border:none;border-radius:var(--r3);padding:13px;color:#fff;font-size:14px;font-weight:600;font-family:var(--font);cursor:pointer;margin-top:.5rem;letter-spacing:-.1px;transition:opacity .2s,transform .1s}
+.btnLogin:hover{opacity:.9}
+.btnLogin:active{transform:scale(.98)}
+.loginErr{color:var(--red);font-size:12px;text-align:center;margin-top:.5rem;display:none}
+
+/* ── APP ── */
+#appScreen{display:none;min-height:100vh}
+.layout{display:flex;min-height:100vh}
+
+/* ── SIDEBAR ── */
+.sidebar{width:var(--sidebar);background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:100;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+.sbHead{padding:1.4rem 1.2rem 1rem;border-bottom:1px solid var(--border)}
+.sbBrand{display:flex;align-items:center;gap:10px}
+.sbLogo{width:36px;height:36px;background:linear-gradient(135deg,var(--accent),var(--purple));border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.sbLogo i{color:#fff;font-size:17px}
+.sbName{font-size:14px;font-weight:700;letter-spacing:-.3px;line-height:1.2}
+.sbSub{font-size:10px;color:var(--text2);font-weight:400}
+.sbNav{flex:1;overflow-y:auto;padding:.6rem .8rem}
+.sbSection{font-size:10px;font-weight:600;color:var(--text3);letter-spacing:.8px;text-transform:uppercase;padding:.8rem .6rem .4rem;margin-top:.4rem}
+.navItem{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r3);cursor:pointer;color:var(--text2);font-size:13px;font-weight:500;transition:all .15s;position:relative;margin-bottom:2px}
+.navItem:hover{background:var(--bg3);color:var(--text)}
+.navItem.active{background:linear-gradient(135deg,var(--accent)22,var(--purple)18);color:var(--accent);font-weight:600}
+.navItem i{font-size:18px;width:22px;text-align:center;flex-shrink:0}
+.navBadge{margin-left:auto;background:var(--red);color:#fff;border-radius:50px;font-size:10px;padding:2px 7px;font-weight:700;line-height:1.4}
+.sbFoot{padding:1rem .8rem;border-top:1px solid var(--border)}
+.userPill{display:flex;align-items:center;gap:10px;padding:.6rem .8rem;background:var(--bg3);border-radius:var(--r3);cursor:pointer}
+.uAvatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.uName{font-size:12px;font-weight:600;flex:1;letter-spacing:-.1px}
+.uRole{font-size:10px;color:var(--accent);font-weight:500}
+.logBtn{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;padding:2px;transition:color .2s}
+.logBtn:hover{color:var(--red)}
+
+/* ── MAIN ── */
+.main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column;min-height:100vh}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:.9rem 1.6rem;display:flex;align-items:center;gap:1rem;position:sticky;top:0;z-index:50;backdrop-filter:blur(20px)}
+.topTitle{font-size:16px;font-weight:700;letter-spacing:-.4px;flex:1}
+.searchWrap{display:flex;align-items:center;gap:8px;background:var(--bg3);border:1px solid var(--border2);border-radius:50px;padding:6px 14px;width:200px;transition:width .3s,border .2s}
+.searchWrap:focus-within{width:240px;border-color:var(--accent)}
+.searchWrap i{color:var(--text3);font-size:15px;flex-shrink:0}
+.searchWrap input{background:none;border:none;outline:none;color:var(--text);font-size:13px;font-family:var(--font);width:100%}
+.menuBtn{display:none;background:none;border:none;color:var(--text2);cursor:pointer;font-size:22px;padding:4px}
+
+/* ── PAGES ── */
+.page{display:none;padding:1.6rem;animation:fadeUp .2s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.pageHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem;flex-wrap:wrap;gap:.8rem}
+.pageTitle{font-size:20px;font-weight:700;letter-spacing:-.5px}
+
+/* ── CARDS ── */
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.4rem}
+.card+.card{margin-top:1rem}
+.cHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem}
+.cTitle{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:8px;letter-spacing:-.2px}
+.cTitle i{font-size:17px}
+
+/* ── GRID ── */
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-bottom:1rem}
+.g3{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1rem;margin-bottom:1rem}
+.g4{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.8rem;margin-bottom:1rem}
+
+/* ── STAT CARDS ── */
+.statCard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.3rem;position:relative;overflow:hidden}
+.statCard::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;border-radius:var(--r) var(--r) 0 0}
+.statCard.blue::before{background:linear-gradient(90deg,var(--accent),var(--purple))}
+.statCard.green::before{background:var(--green)}
+.statCard.orange::before{background:var(--orange)}
+.statCard.cyan::before{background:var(--cyan)}
+.statCard.red::before{background:var(--red)}
+.statIcon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:.8rem;font-size:20px}
+.statIcon.blue{background:var(--accent)18;color:var(--accent)}
+.statIcon.green{background:var(--green)18;color:var(--green)}
+.statIcon.orange{background:var(--orange)18;color:var(--orange)}
+.statIcon.cyan{background:var(--cyan)18;color:var(--cyan)}
+.statIcon.red{background:var(--red)18;color:var(--red)}
+.statVal{font-size:28px;font-weight:700;letter-spacing:-.8px;line-height:1}
+.statLbl{font-size:12px;color:var(--text2);margin-top:4px;font-weight:500}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:50px;font-size:11px;font-weight:600;letter-spacing:.1px}
+.b-blue{background:var(--accent)20;color:var(--accent)}
+.b-green{background:var(--green)20;color:var(--green)}
+.b-orange{background:var(--orange)20;color:var(--orange)}
+.b-red{background:var(--red)20;color:var(--red)}
+.b-purple{background:var(--purple)20;color:var(--purple)}
+.b-cyan{background:var(--cyan)20;color:var(--cyan)}
+.b-gray{background:var(--text3)30;color:var(--text2)}
+.b-yellow{background:var(--yellow)20;color:var(--yellow)}
+.b-er{background:#ff6b3520;color:#ff6b35;border:1px solid #ff6b3530}
+.b-discord{background:#5865f220;color:#7289da;border:1px solid #5865f230}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:var(--r3);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border2);background:var(--bg3);color:var(--text);transition:all .15s;font-family:var(--font);letter-spacing:-.1px}
+.btn:hover{background:var(--bg4);border-color:var(--border3)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--purple));border-color:transparent;color:#fff;box-shadow:0 4px 14px var(--accent)30}
+.btn-primary:hover{opacity:.9;background:linear-gradient(135deg,var(--accent),var(--purple))}
+.btn-danger{background:var(--red)18;border-color:var(--red)40;color:var(--red)}
+.btn-success{background:var(--green)18;border-color:var(--green)40;color:var(--green)}
+.btn-sm{padding:5px 11px;font-size:12px;border-radius:var(--r4)}
+.btn-icon{width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--r4)}
+.iconBtn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:18px;padding:4px;border-radius:6px;transition:all .15s;display:inline-flex;align-items:center;justify-content:center}
+.iconBtn:hover{background:var(--bg4);color:var(--text)}
+.iconBtn.danger:hover{color:var(--red)}
+
+/* ── FORMS ── */
+.fRow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-bottom:.9rem}
+.fFull{margin-bottom:.9rem}
+.fFull label,.fRow label{display:block;font-size:11px;font-weight:600;color:var(--text2);margin-bottom:5px;letter-spacing:.4px;text-transform:uppercase}
+.fFull input,.fFull select,.fFull textarea,.fRow input,.fRow select,.fRow textarea{width:100%;background:var(--bg3);border:1px solid var(--border2);border-radius:var(--r3);padding:10px 13px;color:var(--text);font-size:13px;font-family:var(--font);outline:none;transition:border .2s,box-shadow .2s;appearance:none}
+.fFull input:focus,.fFull select:focus,.fFull textarea:focus,.fRow input:focus,.fRow select:focus,.fRow textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
+.fFull textarea{resize:vertical;min-height:80px;line-height:1.6}
+.filterBar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;margin-bottom:1.2rem}
+.filterBar select{background:var(--bg2);border:1px solid var(--border2);border-radius:50px;padding:7px 14px;color:var(--text);font-size:12px;font-family:var(--font);font-weight:500;outline:none;cursor:pointer;appearance:none}
+.filterBar select:focus{border-color:var(--accent)}
+
+/* ── TABLES ── */
+.tWrap{overflow-x:auto;border-radius:var(--r2);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse}
+th{font-size:11px;color:var(--text2);font-weight:600;text-transform:uppercase;letter-spacing:.5px;padding:10px 14px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;background:var(--bg3)}
+td{padding:12px 14px;border-bottom:1px solid var(--border);font-size:13px;color:var(--text);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--bg3)70}
+
+/* ── MODAL ── */
+.mOverlay{position:fixed;inset:0;background:#00000090;display:none;align-items:center;justify-content:center;z-index:200;padding:1rem;backdrop-filter:blur(4px)}
+.mOverlay.open{display:flex}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:20px;padding:1.6rem;width:560px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:0 40px 80px #00000090}
+.mHead{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.4rem}
+.mTitle{font-size:16px;font-weight:700;letter-spacing:-.4px}
+.mClose{background:var(--bg3);border:none;color:var(--text2);cursor:pointer;width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;transition:all .15s}
+.mClose:hover{background:var(--bg4);color:var(--text)}
+.sep{height:1px;background:var(--border);margin:1.2rem 0}
+
+/* ── STAFF ── */
+.staffCard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;margin-bottom:.8rem;transition:border .2s}
+.staffCard:hover{border-color:var(--border2)}
+.staffTop{display:flex;align-items:center;gap:12px;margin-bottom:.8rem}
+.sAvatar{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;color:#fff;flex-shrink:0}
+.sName{font-size:14px;font-weight:700;letter-spacing:-.3px}
+.sMeta{font-size:12px;color:var(--text2);margin-top:2px}
+.staffActions{margin-left:auto;display:flex;gap:4px}
+.staffInfo{display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.6rem}
+.staffStatus{display:flex;align-items:center;gap:6px;font-size:12px}
+.dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.dot.active{background:var(--green);box-shadow:0 0 6px var(--green)}
+.dot.inactive{background:var(--text3)}
+.dot.warn{background:var(--red);box-shadow:0 0 6px var(--red)}
+.staffObs{background:var(--bg3);border-radius:var(--r4);padding:.7rem 1rem;font-size:12px;color:var(--text2);line-height:1.6;margin-top:.6rem;border-left:2px solid var(--border3)}
+.staffNote{background:var(--yellow)10;border:1px solid var(--yellow)25;border-radius:var(--r4);padding:.7rem 1rem;font-size:12px;color:var(--text2);line-height:1.6;margin-top:.5rem}
+
+/* ── CASOS ── */
+.casoCard{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;margin-bottom:.8rem}
+.casoHead{display:flex;align-items:flex-start;gap:10px;margin-bottom:.6rem}
+.casoIcon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.casoTitle{font-size:13px;font-weight:700;letter-spacing:-.2px}
+.casoMeta{font-size:11px;color:var(--text2);margin-top:2px}
+.casoDesc{font-size:12px;color:var(--text2);line-height:1.6;margin:.6rem 0}
+
+/* ── TAREAS ── */
+.tareaItem{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.tareaItem:last-child{border-bottom:none}
+.tCheck{width:20px;height:20px;border-radius:50%;border:2px solid var(--border3);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;margin-top:1px;transition:all .2s}
+.tCheck.done{background:var(--green);border-color:var(--green)}
+.tCheck.done::after{content:'✓';font-size:10px;color:#fff;font-weight:700}
+.tContent{flex:1}
+.tTitle{font-size:13px;font-weight:600;letter-spacing:-.2px}
+.tTitle.done{text-decoration:line-through;opacity:.4}
+.tMeta{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:5px}
+.tDesc{font-size:12px;color:var(--text2);margin-top:3px;line-height:1.5}
+
+/* ── RANGOS ── */
+.rangoCard{display:flex;align-items:center;gap:12px;padding:12px;background:var(--bg3);border:1px solid var(--border);border-radius:var(--r3);margin-bottom:.6rem}
+.rangoNum{width:28px;height:28px;border-radius:8px;background:var(--accent)20;color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex-shrink:0}
+
+/* ── NOTAS ── */
+.noteCard{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:1rem;margin-bottom:.7rem;position:relative}
+.noteTitle{font-size:13px;font-weight:600;letter-spacing:-.2px}
+.noteBody{font-size:12px;color:var(--text2);line-height:1.6;margin-top:4px}
+.noteMeta{font-size:11px;color:var(--text3);margin-top:.5rem}
+.noteAct{position:absolute;top:.8rem;right:.8rem;display:flex;gap:3px}
+
+/* ── ACTIVITY ── */
+.actItem{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.actItem:last-child{border-bottom:none}
+.actDot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:5px;flex-shrink:0}
+.actText{font-size:13px;color:var(--text2);line-height:1.5}
+.actText b{color:var(--text);font-weight:600}
+.actTime{font-size:11px;color:var(--text3);margin-top:2px}
+
+/* ── QUICK ── */
+.quickGrid{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+.quickBtn{background:var(--bg3);border:1px solid var(--border);border-radius:var(--r2);padding:1rem .8rem;display:flex;flex-direction:column;align-items:center;gap:7px;cursor:pointer;transition:all .2s;text-align:center}
+.quickBtn:hover{background:var(--bg4);border-color:var(--accent)50;transform:translateY(-2px)}
+.quickBtn:active{transform:scale(.96)}
+.quickBtn .qIcon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:19px;margin:0 auto}
+.quickBtn span{font-size:11px;font-weight:600;color:var(--text2)}
+
+/* ── ALERT ── */
+.alertBox{border-radius:var(--r3);padding:.9rem 1.1rem;display:flex;align-items:flex-start;gap:.8rem;margin-bottom:.7rem}
+.alertBox.warn{background:var(--yellow)12;border:1px solid var(--yellow)30}
+.alertBox.danger{background:var(--red)12;border:1px solid var(--red)30}
+.alertBox.info{background:var(--accent)12;border:1px solid var(--accent)30}
+.alertBox.success{background:var(--green)12;border:1px solid var(--green)30}
+.alertBox i{font-size:17px;flex-shrink:0;margin-top:1px}
+.alertBox.warn i{color:var(--yellow)}
+.alertBox.danger i{color:var(--red)}
+.alertBox.info i{color:var(--accent)}
+.alertBox.success i{color:var(--green)}
+.alertText{flex:1;font-size:13px}
+.alertText b{font-weight:600}
+.alertClose{background:none;border:none;color:var(--text3);cursor:pointer;font-size:16px;padding:0;margin-left:auto}
+
+/* ── CALENDAR ── */
+.calWrap{border-radius:var(--r);overflow:hidden;border:1px solid var(--border)}
+.calDays{display:grid;grid-template-columns:repeat(7,1fr);background:var(--bg3)}
+.calDayH{text-align:center;font-size:11px;font-weight:700;color:var(--text2);padding:10px 4px;letter-spacing:.4px;text-transform:uppercase}
+.calGrid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--border)}
+.calCell{background:var(--bg2);min-height:72px;padding:6px;cursor:pointer;transition:background .2s}
+.calCell:hover{background:var(--bg3)}
+.calCell.today{background:var(--accent)10}
+.calCell.today .cDay{color:var(--accent);font-weight:800}
+.calCell.other .cDay{color:var(--text3)}
+.cDay{font-size:12px;font-weight:600;margin-bottom:3px}
+.cEv{font-size:10px;border-radius:3px;padding:1px 5px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.cEv.ev-blue{background:var(--accent)30;color:var(--accent)}
+.cEv.ev-green{background:var(--green)30;color:var(--green)}
+.cEv.ev-orange{background:var(--orange)30;color:var(--orange)}
+.cEv.ev-red{background:var(--red)30;color:var(--red)}
+
+/* ── PROGRESS ── */
+.pBar{background:var(--bg4);border-radius:50px;height:5px;overflow:hidden;margin-top:5px}
+.pFill{height:100%;border-radius:50px;transition:width .4s}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+/* ── RESPONSIVE ── */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .menuBtn{display:block}
+  .fRow{grid-template-columns:1fr}
+  .g3,.g4{grid-template-columns:1fr 1fr}
+  .topTitle{font-size:14px}
+  .searchWrap{width:140px}
+  .searchWrap:focus-within{width:160px}
+  .quickGrid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .g3,.g4,.g2{grid-template-columns:1fr}
+  .page{padding:1rem}
+}
+.empty{text-align:center;padding:2.5rem;color:var(--text3)}
+.empty i{font-size:36px;display:block;margin-bottom:.8rem;opacity:.4}
+.empty p{font-size:13px}
+.tagRow{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.5rem}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="loginWrap">
+    <div class="loginCard">
+      <div class="loginBrand">
+        <div class="loginIcon"><i class="ti ti-crown"></i></div>
+        <div class="loginTitle">Panel Administrativo</div>
+        <div class="loginSub">Director Ejecutivo · Servidor Roleplay</div>
+      </div>
+      <div class="fGroup"><label>Usuario</label><input type="text" id="liUser" placeholder="Tu usuario" autocomplete="off"/></div>
+      <div class="fGroup"><label>Contraseña</label><input type="password" id="liPass" placeholder="••••••••" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+      <button class="btnLogin" onclick="doLogin()"><i class="ti ti-login" style="font-size:16px"></i> Ingresar al Panel</button>
+      <div class="loginErr" id="liErr">Usuario o contraseña incorrectos</div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="appScreen">
+<div class="layout">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sbHead">
+    <div class="sbBrand">
+      <div class="sbLogo"><i class="ti ti-crown"></i></div>
+      <div><div class="sbName" id="sbName">Panel Admin</div><div class="sbSub">Servidor Roleplay</div></div>
+    </div>
+  </div>
+  <nav class="sbNav">
+    <div class="sbSection">General</div>
+    <div class="navItem active" onclick="go('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+    <div class="navItem" onclick="go('staff',this)"><i class="ti ti-users"></i> Gestión de Staff</div>
+    <div class="navItem" onclick="go('casosadm',this)"><i class="ti ti-folder-star"></i> Casos ADM</div>
+    <div class="navItem" onclick="go('casosstaff',this)"><i class="ti ti-folder-share"></i> Casos Staff</div>
+    <div class="navItem" onclick="go('tareas',this)"><i class="ti ti-checklist"></i> Tareas <span class="navBadge" id="badgeTareas" style="display:none">0</span></div>
+    <div class="sbSection">Administración</div>
+    <div class="navItem" onclick="go('notas',this)"><i class="ti ti-notebook"></i> Notas</div>
+    <div class="navItem" onclick="go('rangos',this)"><i class="ti ti-shield-check"></i> Rangos</div>
+    <div class="navItem" onclick="go('reportes',this)"><i class="ti ti-flag"></i> Reportes <span class="navBadge" id="badgeRep" style="display:none">0</span></div>
+    <div class="navItem" onclick="go('reuniones',this)"><i class="ti ti-file-text"></i> Reuniones</div>
+    <div class="navItem" onclick="go('calendario',this)"><i class="ti ti-calendar"></i> Calendario</div>
+    <div class="sbSection">Sistema</div>
+    <div class="navItem" onclick="go('avisos',this)"><i class="ti ti-bell"></i> Avisos</div>
+    <div class="navItem" onclick="go('historial',this)"><i class="ti ti-history"></i> Historial</div>
+    <div class="navItem" onclick="go('configuracion',this)"><i class="ti ti-settings"></i> Configuración</div>
+  </nav>
+  <div class="sbFoot">
+    <div class="userPill">
+      <div class="uAvatar" id="uAv">DE</div>
+      <div><div class="uName" id="uNm">Director</div><div class="uRole" id="uRl">Director Ejecutivo</div></div>
+      <button class="logBtn" onclick="doLogout()" title="Cerrar sesión"><i class="ti ti-logout"></i></button>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <button class="menuBtn" onclick="toggleSB()"><i class="ti ti-menu-2"></i></button>
+    <div class="topTitle" id="topTitle">Dashboard</div>
+    <div class="searchWrap">
+      <i class="ti ti-search"></i>
+      <input type="text" placeholder="Buscar..." id="gSearch"/>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="page active" id="page-dashboard">
+    <div id="dashAvisos"></div>
+    <div class="g4">
+      <div class="statCard blue"><div class="statIcon blue"><i class="ti ti-users"></i></div><div class="statVal" id="ds1">0</div><div class="statLbl">Staff total</div></div>
+      <div class="statCard green"><div class="statIcon green"><i class="ti ti-user-check"></i></div><div class="statVal" id="ds2">0</div><div class="statLbl">Staff activo</div></div>
+      <div class="statCard orange"><div class="statIcon orange"><i class="ti ti-flag"></i></div><div class="statVal" id="ds3">0</div><div class="statLbl">Reportes pendientes</div></div>
+      <div class="statCard cyan"><div class="statIcon cyan"><i class="ti ti-folder-open"></i></div><div class="statVal" id="ds4">0</div><div class="statLbl">Casos abiertos</div></div>
+      <div class="statCard red"><div class="statIcon red"><i class="ti ti-checklist"></i></div><div class="statVal" id="ds5">0</div><div class="statLbl">Tareas pendientes</div></div>
+    </div>
+    <div class="g2">
+      <div class="card">
+        <div class="cHead"><div class="cTitle"><i class="ti ti-bolt" style="color:var(--yellow)"></i> Accesos Rápidos</div></div>
+        <div class="quickGrid">
+          <div class="quickBtn" onclick="go('staff',null)"><div class="qIcon" style="background:var(--accent)20;color:var(--accent)"><i class="ti ti-user-plus"></i></div><span>Añadir Staff</span></div>
+          <div class="quickBtn" onclick="go('casos',null)"><div class="qIcon" style="background:var(--cyan)20;color:var(--cyan)"><i class="ti ti-folder-plus"></i></div><span>Nuevo Caso</span></div>
+          <div class="quickBtn" onclick="go('tareas',null)"><div class="qIcon" style="background:var(--green)20;color:var(--green)"><i class="ti ti-circle-plus"></i></div><span>Nueva Tarea</span></div>
+          <div class="quickBtn" onclick="go('reportes',null)"><div class="qIcon" style="background:var(--orange)20;color:var(--orange)"><i class="ti ti-flag"></i></div><span>Ver Reportes</span></div>
+          <div class="quickBtn" onclick="go('notas',null)"><div class="qIcon" style="background:var(--purple)20;color:var(--purple)"><i class="ti ti-pencil"></i></div><span>Nueva Nota</span></div>
+          <div class="quickBtn" onclick="go('calendario',null)"><div class="qIcon" style="background:var(--red)20;color:var(--red)"><i class="ti ti-calendar"></i></div><span>Calendario</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="cHead"><div class="cTitle"><i class="ti ti-activity" style="color:var(--green)"></i> Actividad Reciente</div></div>
+        <div id="dashAct"><div class="empty"><i class="ti ti-clock"></i><p>Sin actividad aún</p></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STAFF -->
+  <div class="page" id="page-staff">
+    <div class="pageHead">
+      <div class="pageTitle">Gestión de Staff</div>
+      <button class="btn btn-primary" onclick="openM('mStaff');resetStaffForm()"><i class="ti ti-user-plus"></i> Añadir Staff</button>
+    </div>
+    <div class="filterBar">
+      <select id="fRango" onchange="renderStaff()"><option value="">Todos los rangos</option></select>
+      <select id="fEstado" onchange="renderStaff()"><option value="">Todos los estados</option><option>Activo</option><option>Nuevo</option><option>De prueba</option><option>Riesgo</option><option>Inactivo</option></select>
+      <select id="fCat" onchange="renderStaff()"><option value="">Todas las categorías</option><option value="ER:LC">ER:LC</option><option value="Discord">Discord</option></select>
+    </div>
+    <div id="staffList"></div>
+  </div>
+
+  <!-- CASOS ADM -->
+  <div class="page" id="page-casosadm">
+    <div class="pageHead">
+      <div class="pageTitle">Casos ADM</div>
+      <button class="btn btn-primary" onclick="openCasoModal('adm')"><i class="ti ti-folder-plus"></i> Nuevo Caso ADM</button>
+    </div>
+    <div class="filterBar">
+      <select id="fCasoAdmEst" onchange="renderCasosAdm()"><option value="">Todos los estados</option><option>Abierto</option><option>En proceso</option><option>Cerrado</option></select>
+      <select id="fCasoAdmCat" onchange="renderCasosAdm()"><option value="">Todas las categorías</option><option>Conducta</option><option>Conflicto</option><option>Disciplina</option><option>Apelación</option><option>Sanción</option><option>Otro</option></select>
+    </div>
+    <div id="casosAdmList"></div>
+  </div>
+
+  <!-- CASOS STAFF -->
+  <div class="page" id="page-casosstaff">
+    <div class="pageHead">
+      <div class="pageTitle">Casos Staff</div>
+      <button class="btn btn-primary" onclick="openCasoModal('staff')"><i class="ti ti-folder-plus"></i> Nuevo Caso Staff</button>
+    </div>
+    <div class="filterBar">
+      <select id="fCasoStaffEst" onchange="renderCasosStaff()"><option value="">Todos los estados</option><option>Abierto</option><option>En proceso</option><option>Cerrado</option></select>
+      <select id="fCasoStaffCat" onchange="renderCasosStaff()"><option value="">Todas las categorías</option><option>Conducta</option><option>Inactividad</option><option>Conflicto</option><option>Renuncia</option><option>Desempeño</option><option>Otro</option></select>
+    </div>
+    <div id="casosStaffList"></div>
+  </div>
+
+  <!-- TAREAS -->
+  <div class="page" id="page-tareas">
+    <div class="pageHead">
+      <div class="pageTitle">Tareas</div>
+      <button class="btn btn-primary" onclick="openM('mTarea')"><i class="ti ti-plus"></i> Nueva Tarea</button>
+    </div>
+    <div class="filterBar">
+      <select id="fTareaEst" onchange="renderTareas()"><option value="">Todas</option><option>Pendiente</option><option>En progreso</option><option>Completada</option></select>
+      <select id="fTareaPrio" onchange="renderTareas()"><option value="">Toda prioridad</option><option>Alta</option><option>Media</option><option>Baja</option></select>
+    </div>
+    <div class="card"><div id="tareasList"></div></div>
+  </div>
+
+  <!-- NOTAS -->
+  <div class="page" id="page-notas">
+    <div class="pageHead">
+      <div class="pageTitle">Notas</div>
+      <button class="btn btn-primary" onclick="openM('mNota')"><i class="ti ti-plus"></i> Nueva Nota</button>
+    </div>
+    <div class="filterBar">
+      <select id="fNotaCat" onchange="renderNotas()"><option value="">Todas</option><option>General</option><option>Privada</option><option>Staff</option><option>Recordatorio</option></select>
+    </div>
+    <div id="notasList"></div>
+  </div>
+
+  <!-- RANGOS -->
+  <div class="page" id="page-rangos">
+    <div class="pageHead"><div class="pageTitle">Rangos y Permisos</div><button class="btn btn-primary" onclick="openM('mRango')"><i class="ti ti-plus"></i> Nuevo Rango</button></div>
+    <div class="g2">
+      <div class="card">
+        <div class="cHead"><div class="cTitle"><i class="ti ti-shield-check" style="color:var(--accent)"></i> Jerarquía</div></div>
+        <div id="rangosList"></div>
+      </div>
+      <div class="card">
+        <div class="cHead"><div class="cTitle"><i class="ti ti-users" style="color:var(--purple)"></i> Staff por Rango</div></div>
+        <div id="staffByRango"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- REPORTES -->
+  <div class="page" id="page-reportes">
+    <div class="pageHead"><div class="pageTitle">Reportes</div><button class="btn btn-primary" onclick="openM('mReporte')"><i class="ti ti-plus"></i> Nuevo Reporte</button></div>
+    <div class="filterBar">
+      <select id="fRepEst" onchange="renderReportes()"><option value="">Todos</option><option>Pendiente</option><option>En revisión</option><option>Resuelto</option></select>
+    </div>
+    <div class="tWrap"><table><thead><tr><th>#</th><th>Título</th><th>Categoría</th><th>Estado</th><th>Responsable</th><th>Fecha</th><th></th></tr></thead><tbody id="repTable"></tbody></table></div>
+  </div>
+
+  <!-- REUNIONES -->
+  <div class="page" id="page-reuniones">
+    <div class="pageHead"><div class="pageTitle">Reuniones</div><button class="btn btn-primary" onclick="openM('mReunion')"><i class="ti ti-plus"></i> Nueva Acta</button></div>
+    <div id="reunionesList"></div>
+  </div>
+
+  <!-- CALENDARIO -->
+  <div class="page" id="page-calendario">
+    <div class="pageHead">
+      <div class="pageTitle" id="calLabel">Junio 2025</div>
+      <div style="display:flex;gap:.5rem">
+        <button class="btn" onclick="calPrev()"><i class="ti ti-chevron-left"></i></button>
+        <button class="btn" onclick="calNext()"><i class="ti ti-chevron-right"></i></button>
+        <button class="btn btn-primary" onclick="openM('mEvento')"><i class="ti ti-plus"></i> Evento</button>
+      </div>
+    </div>
+    <div class="calWrap">
+      <div class="calDays">
+        <div class="calDayH">LUN</div><div class="calDayH">MAR</div><div class="calDayH">MIÉ</div>
+        <div class="calDayH">JUE</div><div class="calDayH">VIE</div><div class="calDayH">SÁB</div><div class="calDayH">DOM</div>
+      </div>
+      <div class="calGrid" id="calGrid"></div>
+    </div>
+    <div class="card" style="margin-top:1rem"><div class="cHead"><div class="cTitle"><i class="ti ti-calendar-event" style="color:var(--cyan)"></i> Próximos eventos</div></div><div id="proxEvs"></div></div>
+  </div>
+
+  <!-- AVISOS -->
+  <div class="page" id="page-avisos">
+    <div class="pageHead"><div class="pageTitle">Avisos Internos</div><button class="btn btn-primary" onclick="openM('mAviso')"><i class="ti ti-plus"></i> Nuevo Aviso</button></div>
+    <div id="avisosList"></div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="page" id="page-historial">
+    <div class="pageHead">
+      <div class="pageTitle">Historial de Cambios</div>
+      <button class="btn btn-danger" onclick="if(confirm('¿Borrar historial?')){DB.hist=[];saveDB();renderHist()}"><i class="ti ti-trash"></i> Limpiar</button>
+    </div>
+    <div class="card"><div id="histList"></div></div>
+  </div>
+
+  <!-- CONFIG -->
+  <div class="page" id="page-configuracion">
+    <div class="pageHead"><div class="pageTitle">Configuración</div></div>
+    <div class="card" style="max-width:480px">
+      <div class="cHead"><div class="cTitle"><i class="ti ti-settings" style="color:var(--accent)"></i> General</div></div>
+      <div class="fFull"><label>Nombre del Servidor</label><input type="text" id="cfgName" placeholder="Nombre del servidor"/></div>
+      <div class="fFull"><label>Descripción</label><input type="text" id="cfgDesc" placeholder="Descripción breve"/></div>
+      <div class="sep"></div>
+      <div class="cTitle" style="margin-bottom:1rem;font-size:13px"><i class="ti ti-lock" style="color:var(--orange)"></i> Cambiar Contraseña</div>
+      <div class="fFull"><label>Contraseña actual</label><input type="password" id="cfgP1"/></div>
+      <div class="fRow"><div><label>Nueva</label><input type="password" id="cfgP2"/></div><div><label>Confirmar</label><input type="password" id="cfgP3"/></div></div>
+      <div id="cfgMsg" style="font-size:12px;margin-bottom:.8rem"></div>
+      <button class="btn btn-primary" onclick="saveConfig()"><i class="ti ti-device-floppy"></i> Guardar</button>
+      <div class="sep"></div>
+      <button class="btn btn-danger" onclick="if(confirm('¿Resetear TODO? No se puede deshacer.')){localStorage.removeItem('rpPanel');fetch('/api/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})}).finally(()=>location.reload())}"><i class="ti ti-trash"></i> Resetear todos los datos</button>
+    </div>
+  </div>
+
+</div><!-- /main -->
+</div><!-- /layout -->
+</div><!-- /appScreen -->
+
+<!-- ══ MODALES ══ -->
+
+<!-- Staff -->
+<div class="mOverlay" id="mStaff">
+<div class="modal">
+  <div class="mHead"><div class="mTitle" id="mStaffTitle">Añadir Staff</div><button class="mClose" onclick="closeM('mStaff')"><i class="ti ti-x"></i></button></div>
+  <input type="hidden" id="sEId"/>
+  <div class="fRow"><div><label>Nombre</label><input type="text" id="sNom" placeholder="Nombre completo"/></div><div><label>Rango</label><input type="text" id="sRng" placeholder="Ej: Moderador" list="rangosList_dl"/><datalist id="rangosList_dl"></datalist></div></div>
+  <div class="fRow">
+    <div><label>Categoría</label>
+      <select id="sCat">
+        <option value="ER:LC">ER:LC</option>
+        <option value="Discord">Discord</option>
+      </select>
+    </div>
+    <div><label>Estado</label>
+      <select id="sEst">
+        <option>Activo</option>
+        <option>Nuevo</option>
+        <option>De prueba</option>
+        <option>Riesgo</option>
+        <option>Inactivo</option>
+      </select>
+    </div>
+  </div>
+  <div class="fFull"><label>Observación</label><textarea id="sObs" placeholder="Observaciones sobre este miembro..."></textarea></div>
+  <div class="fFull"><label>Notas Internas</label><textarea id="sNotas" placeholder="Notas privadas del Director Ejecutivo..."></textarea></div>
+  <div class="fFull"><label>Sanción / Advertencia</label><textarea id="sSan" placeholder="Detalle de sanciones o advertencias activas..."></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveStaff()"><i class="ti ti-device-floppy"></i> Guardar</button>
+</div></div>
+
+<!-- Staff — ver perfil -->
+<div class="mOverlay" id="mVerStaff">
+<div class="modal"><div class="mHead"><div class="mTitle">Perfil de Staff</div><button class="mClose" onclick="closeM('mVerStaff')"><i class="ti ti-x"></i></button></div><div id="staffPerfilContent"></div></div></div>
+
+<!-- Caso (ADM y Staff comparten modal) -->
+<div class="mOverlay" id="mCaso">
+<div class="modal">
+  <div class="mHead"><div class="mTitle" id="mCasoTitle">Nuevo Caso</div><button class="mClose" onclick="closeM('mCaso')"><i class="ti ti-x"></i></button></div>
+  <input type="hidden" id="cEId"/>
+  <input type="hidden" id="cTipo"/>
+  <div class="fRow"><div><label>Título</label><input type="text" id="cTit" placeholder="Nombre del caso"/></div><div><label>Categoría</label><select id="cCat"><option>Conducta</option><option>Conflicto</option><option>Disciplina</option><option>Apelación</option><option>Sanción</option><option>Inactividad</option><option>Renuncia</option><option>Desempeño</option><option>Otro</option></select></div></div>
+  <div class="fRow"><div><label>Estado</label><select id="cEst"><option>Abierto</option><option>En proceso</option><option>Cerrado</option></select></div><div><label>Involucrado(s)</label><input type="text" id="cInv" placeholder="Nombres"/></div></div>
+  <div class="fFull"><label>Descripción del Caso</label><textarea id="cDesc" placeholder="Detalla el caso..."></textarea></div>
+  <div class="fFull"><label>Resolución / Acciones Tomadas</label><textarea id="cRes" placeholder="Qué se hizo o se decidió..."></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveCaso()"><i class="ti ti-device-floppy"></i> Guardar</button>
+</div></div>
+
+<!-- Tarea -->
+<div class="mOverlay" id="mTarea">
+<div class="modal">
+  <div class="mHead"><div class="mTitle">Nueva Tarea</div><button class="mClose" onclick="closeM('mTarea')"><i class="ti ti-x"></i></button></div>
+  <input type="hidden" id="tEId"/>
+  <div class="fRow"><div><label>Título</label><input type="text" id="tTit" placeholder="Nombre de la tarea"/></div><div><label>Prioridad</label><select id="tPrio"><option>Alta</option><option>Media</option><option>Baja</option></select></div></div>
+  <div class="fRow"><div><label>Estado</label><select id="tEst"><option>Pendiente</option><option>En progreso</option><option>Completada</option></select></div><div><label>Responsable</label><input type="text" id="tResp" placeholder="Asignado a..."/></div></div>
+  <div class="fFull"><label>Descripción</label><textarea id="tDesc" placeholder="Detalle de la tarea..."></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveTarea()"><i class="ti ti-device-floppy"></i> Guardar</button>
+</div></div>
+
+<!-- Nota -->
+<div class="mOverlay" id="mNota">
+<div class="modal">
+  <div class="mHead"><div class="mTitle">Nueva Nota</div><button class="mClose" onclick="closeM('mNota')"><i class="ti ti-x"></i></button></div>
+  <input type="hidden" id="nEId"/>
+  <div class="fRow"><div><label>Título</label><input type="text" id="nTit" placeholder="Título"/></div><div><label>Categoría</label><select id="nCat"><option>General</option><option>Privada</option><option>Staff</option><option>Recordatorio</option></select></div></div>
+  <div class="fFull"><label>Contenido</label><textarea id="nBody" placeholder="Escribe aquí..." style="min-height:120px"></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveNota()"><i class="ti ti-device-floppy"></i> Guardar</button>
+</div></div>
+
+<!-- Rango -->
+<div class="mOverlay" id="mRango">
+<div class="modal">
+  <div class="mHead"><div class="mTitle">Nuevo Rango</div><button class="mClose" onclick="closeM('mRango')"><i class="ti ti-x"></i></button></div>
+  <div class="fRow"><div><label>Nombre del Rango</label><input type="text" id="rgNom" placeholder="Ej: Moderador"/></div><div><label>Nivel (1 = más alto)</label><input type="number" id="rgNiv" placeholder="1" min="1"/></div></div>
+  <div class="fFull"><label>Descripción / Permisos</label><textarea id="rgDesc" placeholder="Qué puede hacer este rango..."></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveRango()"><i class="ti ti-device-floppy"></i> Guardar</button>
+</div></div>
+
+<!-- Reporte -->
+<div class="mOverlay" id="mReporte">
+<div class="modal">
+  <div class="mHead"><div class="mTitle">Nuevo Reporte</div><button class="mClose" onclick="closeM('mReporte')"><i class="ti ti-x"></i></button></div>
+  <div class="fRow"><div><label>Título</label><input type="text" id="rpTit" placeholder="Título"/></div><div><label>Categoría</label><select id="rpCat"><option>Conducta</option><option>Abuso de poder</option><option>Inactividad</option><option>Conflicto</option><option>Otro</option></select></div></div>
+  <div class="fRow"><div><label>Estado</label><select id="rpEst"><option>Pendiente</option><option>En revisión</option><option>Resuelto</option></select></div><div><label>Responsable</label><input type="text" id="rpResp" placeholder="Asignado a..."/></div></div>
+  <div class="fFull"><label>Descripción</label><textarea id="rpDesc" placeholder="Detalle..."></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveReporte()"><i class="ti ti-device-floppy"></i> Guardar</button>
+</div></div>
+
+<!-- Reunión -->
+<div class="mOverlay" id="mReunion">
+<div class="modal">
+  <div class="mHead"><div class="mTitle">Nueva Acta de Reunión</div><button class="mClose" onclick="closeM('mReunion')"><i class="ti ti-x"></i></button></div>
+  <div class="fRow"><div><label>Título</label><input type="text" id="rnTit" placeholder="Reunión de Staff..."/></div><div><label>Fecha</label><input type="date" id="rnFecha"/></div></div>
+  <div class="fFull"><label>Asistentes</label><input type="text" id="rnAsis" placeholder="Separados por coma"/></div>
+  <div class="fFull"><label>Temas Tratados</label><textarea id="rnTemas" placeholder="Lista de temas..."></textarea></div>
+  <div class="fFull"><label>Acuerdos</label><textarea id="rnAcuerdo" placeholder="Decisiones tomadas..."></textarea></div>
+  <div class="fFull"><label>Seguimiento</label><textarea id="rnSeg" placeholder="Tareas pendientes..."></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveReunion()"><i class="ti ti-device-floppy"></i> Guardar Acta</button>
+</div></div>
+
+<!-- Ver Reunión -->
+<div class="mOverlay" id="mVerReunion">
+<div class="modal"><div class="mHead"><div class="mTitle">Acta de Reunión</div><button class="mClose" onclick="closeM('mVerReunion')"><i class="ti ti-x"></i></button></div><div id="reunionDetalle"></div></div></div>
+
+<!-- Evento -->
+<div class="mOverlay" id="mEvento">
+<div class="modal">
+  <div class="mHead"><div class="mTitle">Nuevo Evento</div><button class="mClose" onclick="closeM('mEvento')"><i class="ti ti-x"></i></button></div>
+  <div class="fRow"><div><label>Título</label><input type="text" id="evTit" placeholder="Nombre del evento"/></div><div><label>Fecha</label><input type="date" id="evFech"/></div></div>
+  <div class="fRow"><div><label>Tipo</label><select id="evTipo"><option>Reunión</option><option>Evento</option><option>Capacitación</option><option>Recordatorio</option></select></div><div><label>Hora</label><input type="time" id="evHora"/></div></div>
+  <div class="fFull"><label>Descripción</label><textarea id="evDesc" placeholder="Detalles..."></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveEvento()"><i class="ti ti-device-floppy"></i> Guardar</button>
+</div></div>
+
+<!-- Aviso -->
+<div class="mOverlay" id="mAviso">
+<div class="modal">
+  <div class="mHead"><div class="mTitle">Nuevo Aviso</div><button class="mClose" onclick="closeM('mAviso')"><i class="ti ti-x"></i></button></div>
+  <div class="fRow"><div><label>Título</label><input type="text" id="avTit" placeholder="Título"/></div><div><label>Tipo</label><select id="avTipo"><option value="info">Información</option><option value="warn">Advertencia</option><option value="danger">Urgente</option><option value="success">Éxito</option></select></div></div>
+  <div class="fFull"><label>Mensaje</label><textarea id="avMsg" placeholder="Contenido del aviso..."></textarea></div>
+  <button class="btn btn-primary" style="width:100%;margin-top:.4rem" onclick="saveAviso()"><i class="ti ti-device-floppy"></i> Publicar</button>
+</div></div>
+
+<script>
+// ══ DB ══
+let DB={
+  users:[{user:'Mtoo',pass:'2026',nombre:'Mtoo',rol:'Director Ejecutivo'}],
+  staff:[],casosAdm:[],casosStaff:[],tareas:[],notas:[],rangos:[
+    {id:'r1',nom:'Director Ejecutivo',niv:1,desc:'Acceso completo al sistema'},
+    {id:'r2',nom:'Administrador',niv:2,desc:'Gestión de staff y reportes'},
+    {id:'r3',nom:'Moderador Senior',niv:3,desc:'Moderar y supervisar staff'},
+    {id:'r4',nom:'Moderador',niv:4,desc:'Soporte y gestión básica'},
+    {id:'r5',nom:'Staff',niv:5,desc:'Acceso de consulta'}
+  ],
+  reportes:[],reuniones:[],eventos:[],avisos:[],hist:[],
+  config:{name:'Panel Admin',desc:'Servidor Roleplay'}
+};
+let cu=null,calD=new Date();
+
+// ══ INDICADOR DE GUARDADO ══
+function showSaveIndicator(ok){
+  let el=document.getElementById('saveIndicator');
+  if(!el){el=document.createElement('div');el.id='saveIndicator';
+    el.style.cssText='position:fixed;bottom:20px;right:20px;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:600;z-index:9999;transition:opacity .4s;pointer-events:none';
+    document.body.appendChild(el);}
+  el.style.opacity='1';
+  if(ok){el.style.background='#22c55e22';el.style.border='1px solid #22c55e50';el.style.color='#22c55e';el.textContent='✓ Guardado';}
+  else{el.style.background='#ef444422';el.style.border='1px solid #ef444450';el.style.color='#ef4444';el.textContent='⚠ Error al guardar (guardado local)';}
+  setTimeout(()=>{el.style.opacity='0';},2000);
+}
+
+async function loadDB(){
+  // 1. Cargar desde localStorage como fallback inmediato
+  const local=localStorage.getItem('rpPanel');
+  if(local)try{const p=JSON.parse(local);Object.keys(p).forEach(k=>DB[k]=p[k]);}catch(e){}
+  // 2. Intentar cargar desde la nube (sobreescribe si hay datos)
+  try{
+    const res=await fetch('/api/load');
+    if(res.ok){
+      const data=await res.json();
+      if(data&&Object.keys(data).length>0){
+        Object.keys(data).forEach(k=>DB[k]=data[k]);
+        // Sincronizar local con la nube
+        localStorage.setItem('rpPanel',JSON.stringify(DB));
+      }
+    }
+  }catch(e){console.warn('Sin conexión a la nube, usando datos locales.');}
+}
+
+async function saveDB(){
+  // Siempre guardar local primero (instantáneo)
+  localStorage.setItem('rpPanel',JSON.stringify(DB));
+  // Luego guardar en la nube
+  try{
+    const res=await fetch('/api/save',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(DB)
+    });
+    if(res.ok){showSaveIndicator(true);}
+    else{showSaveIndicator(false);}
+  }catch(e){
+    showSaveIndicator(false);
+    console.warn('Error guardando en la nube:',e);
+  }
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).substr(2,4);}
+function now(){return new Date().toLocaleString('es-CL');}
+function hist(txt){DB.hist.unshift({txt,ts:now(),u:cu?.nombre||'Sistema'});if(DB.hist.length>300)DB.hist.pop();saveDB();}
+
+// ══ LOGIN ══
+function doLogin(){
+  const u=v('liUser'),p=v('liPass');
+  const usr=DB.users.find(x=>x.user===u&&x.pass===p);
+  if(usr){
+    cu=usr;
+    hide('loginScreen');show('appScreen');
+    s('uNm',usr.nombre);s('uRl',usr.rol);s('uAv',usr.nombre.substr(0,2).toUpperCase());
+    s('sbName',DB.config.name);
+    renderAll();
+  }else{
+    document.getElementById('liErr').style.display='block';
+  }
+}
+function doLogout(){if(confirm('¿Cerrar sesión?')){cu=null;show('loginScreen');hide('appScreen');v2('liUser','');v2('liPass','');}}
+
+// ══ NAV ══
+const titles={dashboard:'Dashboard',staff:'Gestión de Staff',casosadm:'Casos ADM',casosstaff:'Casos Staff',tareas:'Tareas',notas:'Notas',rangos:'Rangos y Permisos',reportes:'Reportes',reuniones:'Reuniones',calendario:'Calendario',avisos:'Avisos Internos',historial:'Historial de Cambios',configuracion:'Configuración'};
+function go(id,el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.navItem').forEach(n=>n.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  if(el)el.classList.add('active');
+  s('topTitle',titles[id]||id);
+  if(id==='dashboard')renderDash();
+  if(id==='calendario')renderCal();
+  if(id==='rangos'){renderRangos();renderStaffByRango();}
+  if(id==='configuracion'){v2('cfgName',DB.config.name);v2('cfgDesc',DB.config.desc);}
+  if(window.innerWidth<=768)document.getElementById('sidebar').classList.remove('open');
+}
+function toggleSB(){document.getElementById('sidebar').classList.toggle('open');}
+
+// ══ MODAL ══
+function openM(id){document.getElementById(id).classList.add('open');}
+function closeM(id){document.getElementById(id).classList.remove('open');}
+window.addEventListener('click',e=>{if(e.target.classList.contains('mOverlay'))e.target.classList.remove('open');});
+
+// ══ HELPERS ══
+function v(id){return document.getElementById(id)?.value||'';}
+function v2(id,val){const el=document.getElementById(id);if(el)el.value=val;}
+function s(id,html){const el=document.getElementById(id);if(el)el.textContent=html;}
+function html(id,h){const el=document.getElementById(id);if(el)el.innerHTML=h;}
+function show(id){const el=document.getElementById(id);if(el)el.style.display=id==='appScreen'?'block':'';}
+function hide(id){const el=document.getElementById(id);if(el)el.style.display='none';}
+function clr(...ids){ids.forEach(id=>v2(id,''));}
+
+// ══ RENDER ALL ══
+function renderAll(){renderDash();renderStaff();renderCasosAdm();renderCasosStaff();renderTareas();renderNotas();renderRangos();renderStaffByRango();renderReportes();renderReuniones();renderCal();renderAvisos();renderHist();updateBadges();updateRangoFilter();}
+
+// ══ DASHBOARD ══
+function renderDash(){
+  s('ds1',DB.staff.length);
+  s('ds2',DB.staff.filter(x=>x.est==='Activo').length);
+  s('ds3',DB.reportes.filter(x=>x.est==='Pendiente').length);
+  s('ds4',((DB.casosAdm||[]).filter(x=>x.est==='Abierto').length)+((DB.casosStaff||[]).filter(x=>x.est==='Abierto').length));
+  s('ds5',DB.tareas.filter(x=>x.est==='Pendiente').length);
+  const ac=document.getElementById('dashAct');
+  if(!DB.hist.length){ac.innerHTML='<div class="empty"><i class="ti ti-clock"></i><p>Sin actividad aún</p></div>';return;}
+  ac.innerHTML=DB.hist.slice(0,7).map(h=>`<div class="actItem"><div class="actDot"></div><div><div class="actText">${h.txt}</div><div class="actTime">${h.ts} · ${h.u}</div></div></div>`).join('');
+  const av=document.getElementById('dashAvisos');
+  av.innerHTML=DB.avisos.slice(0,3).map(a=>`<div class="alertBox ${a.tipo}"><i class="ti ti-bell"></i><div class="alertText"><b>${a.tit}</b> — ${a.msg}</div></div>`).join('');
+}
+
+// ══ STAFF ══
+function updateRangoFilter(){
+  const sel=document.getElementById('fRango');
+  const cur=sel.value;
+  const vals=[...new Set(DB.staff.map(s=>s.rng).filter(Boolean))];
+  sel.innerHTML='<option value="">Todos los rangos</option>'+vals.map(v=>`<option${cur===v?' selected':''}>${v}</option>`).join('');
+  const dl=document.getElementById('rangosList_dl');
+  if(dl)dl.innerHTML=[...new Set(DB.rangos.map(r=>r.nom))].map(n=>`<option value="${n}">`).join('');
+}
+function resetStaffForm(){
+  clr('sEId','sNom','sRng','sObs','sNotas','sSan');
+  v2('sCat','ER:LC');v2('sEst','Activo');
+  s('mStaffTitle','Añadir Staff');
+}
+function renderStaff(){
+  const fR=v('fRango'),fE=v('fEstado'),fC=v('fCat');
+  let data=DB.staff.filter(s=>(!fR||s.rng===fR)&&(!fE||s.est===fE)&&(!fC||s.cat===fC));
+  const c=document.getElementById('staffList');
+  if(!data.length){c.innerHTML='<div class="empty"><i class="ti ti-users"></i><p>No hay staff registrado.</p></div>';return;}
+  c.innerHTML=data.map(s=>`
+    <div class="staffCard">
+      <div class="staffTop">
+        <div class="sAvatar">${s.nom.substr(0,2).toUpperCase()}</div>
+        <div style="flex:1">
+          <div class="sName">${s.nom}</div>
+          <div class="sMeta">${s.rng||'Sin rango'} · <span class="badge ${s.cat==='ER:LC'?'b-er':'b-discord'}">${s.cat}</span></div>
+        </div>
+        <div class="staffActions">
+          <button class="iconBtn" onclick="verStaff('${s.id}')" title="Ver perfil"><i class="ti ti-eye"></i></button>
+          <button class="iconBtn" onclick="editStaff('${s.id}')" title="Editar"><i class="ti ti-edit"></i></button>
+          <button class="iconBtn danger" onclick="delStaff('${s.id}')" title="Eliminar"><i class="ti ti-trash"></i></button>
+        </div>
+      </div>
+      <div class="tagRow">
+        <div class="staffStatus"><div class="dot ${s.est==='Activo'?'active':s.est==='Riesgo'?'warn':'inactive'}"></div><span style="font-size:12px;font-weight:600;color:${s.est==='Activo'?'var(--green)':s.est==='Riesgo'?'var(--red)':s.est==='Nuevo'?'var(--cyan)':s.est==='De prueba'?'var(--yellow)':'var(--text2)'}">${s.est}</span></div>
+        ${s.san?'<span class="badge b-red"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Sancionado</span>':''}
+      </div>
+      ${s.obs?`<div class="staffObs"><i class="ti ti-info-circle" style="font-size:13px;margin-right:5px;color:var(--accent)"></i>${s.obs}</div>`:''}
+      ${s.notas?`<div class="staffNote"><i class="ti ti-lock" style="font-size:12px;margin-right:5px;color:var(--yellow)"></i><b>Nota privada:</b> ${s.notas}</div>`:''}
+    </div>`).join('');
+}
+function saveStaff(){
+  const id=v('sEId');
+  const obj={id:id||uid(),nom:v('sNom').trim(),rng:v('sRng').trim(),cat:v('sCat'),est:v('sEst'),obs:v('sObs'),notas:v('sNotas'),san:v('sSan'),ts:now()};
+  if(!obj.nom)return alert('El nombre es obligatorio');
+  if(id){const i=DB.staff.findIndex(x=>x.id===id);DB.staff[i]={...DB.staff[i],...obj};hist(`Staff editado: ${obj.nom}`);}
+  else{DB.staff.push(obj);hist(`Staff añadido: ${obj.nom}`);}
+  saveDB();renderStaff();updateRangoFilter();updateBadges();closeM('mStaff');renderDash();
+}
+function editStaff(id){
+  const s=DB.staff.find(x=>x.id===id);
+  v2('sEId',s.id);v2('sNom',s.nom);v2('sRng',s.rng||'');v2('sCat',s.cat);v2('sEst',s.est);v2('sObs',s.obs||'');v2('sNotas',s.notas||'');v2('sSan',s.san||'');
+  document.getElementById('mStaffTitle').textContent='Editar Staff';
+  openM('mStaff');
+}
+function delStaff(id){
+  if(!confirm('¿Eliminar este miembro?'))return;
+  const s=DB.staff.find(x=>x.id===id);
+  DB.staff=DB.staff.filter(x=>x.id!==id);hist(`Staff eliminado: ${s.nom}`);saveDB();renderStaff();updateRangoFilter();updateBadges();renderDash();
+}
+function verStaff(id){
+  const s=DB.staff.find(x=>x.id===id);
+  document.getElementById('staffPerfilContent').innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:1rem">
+      <div class="sAvatar" style="width:56px;height:56px;font-size:20px;border-radius:14px">${s.nom.substr(0,2).toUpperCase()}</div>
+      <div>
+        <div style="font-size:18px;font-weight:700;letter-spacing:-.4px">${s.nom}</div>
+        <div style="font-size:13px;color:var(--text2);margin-top:3px">${s.rng||'Sin rango'}</div>
+        <div style="margin-top:5px;display:flex;gap:5px">
+          <span class="badge ${s.cat==='ER:LC'?'b-er':'b-discord'}">${s.cat}</span>
+          <span class="badge ${s.est==='Activo'?'b-green':s.est==='Nuevo'?'b-cyan':s.est==='De prueba'?'b-yellow':s.est==='Riesgo'?'b-red':'b-gray'}">${s.est}</span>
+          ${s.san?'<span class="badge b-red"><i class="ti ti-alert-triangle" style="font-size:11px"></i> Sancionado</span>':''}
+        </div>
+      </div>
+    </div>
+    <div class="sep"></div>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:.4rem">Registrado: ${s.ts||'-'}</div>
+    ${s.obs?`<div class="sep"></div><div style="font-size:12px;color:var(--text2)"><b style="color:var(--text)">Observación:</b><br>${s.obs}</div>`:''}
+    ${s.notas?`<div class="sep"></div><div style="font-size:12px;color:var(--text2);background:var(--yellow)10;border:1px solid var(--yellow)25;border-radius:8px;padding:.8rem"><i class="ti ti-lock" style="color:var(--yellow);font-size:13px;margin-right:5px"></i><b style="color:var(--text)">Notas privadas:</b><br>${s.notas}</div>`:''}
+    ${s.san?`<div class="sep"></div><div style="font-size:12px;background:var(--red)12;border:1px solid var(--red)30;border-radius:8px;padding:.8rem"><i class="ti ti-alert-triangle" style="color:var(--red);font-size:13px;margin-right:5px"></i><b style="color:var(--red)">Sanción:</b><br>${s.san}</div>`:''}`;
+  openM('mVerStaff');
+}
+
+// ══ CASOS ADM + STAFF ══
+function casoCard(c,tipo){
+  const clrs={Conducta:'orange',Conflicto:'cyan',Disciplina:'purple','Apelación':'blue',Sanción:'red',Inactividad:'yellow',Renuncia:'gray',Desempeño:'green',Otro:'accent'};
+  const col=clrs[c.cat]||'accent';
+  return`<div class="casoCard">
+    <div class="casoHead">
+      <div class="casoIcon" style="background:var(--${col})20;color:var(--${col})"><i class="ti ti-folder-open"></i></div>
+      <div style="flex:1"><div class="casoTitle">${c.tit}</div><div class="casoMeta">${c.ts}</div></div>
+      <div style="display:flex;gap:.4rem;align-items:center">
+        <span class="badge ${c.est==='Abierto'?'b-red':c.est==='En proceso'?'b-yellow':'b-green'}">${c.est}</span>
+        <button class="iconBtn" onclick="editCaso('${c.id}','${tipo}')"><i class="ti ti-edit"></i></button>
+        <button class="iconBtn danger" onclick="delCaso('${c.id}','${tipo}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.5rem">
+      <span class="badge b-blue">${c.cat}</span>
+      ${c.inv?`<span class="badge b-purple"><i class="ti ti-user" style="font-size:11px"></i> ${c.inv}</span>`:''}
+    </div>
+    ${c.desc?`<div class="casoDesc">${c.desc}</div>`:''}
+    ${c.res?`<div style="background:var(--green)10;border:1px solid var(--green)25;border-radius:6px;padding:.6rem .8rem;font-size:12px;color:var(--text2)"><i class="ti ti-check" style="color:var(--green);font-size:13px;margin-right:5px"></i><b style="color:var(--text)">Resolución:</b> ${c.res}</div>`:''}
+  </div>`;
+}
+function renderCasosAdm(){
+  const fE=v('fCasoAdmEst'),fC=v('fCasoAdmCat');
+  let data=(DB.casosAdm||[]).filter(c=>(!fE||c.est===fE)&&(!fC||c.cat===fC));
+  const el=document.getElementById('casosAdmList');
+  if(!el)return;
+  if(!data.length){el.innerHTML='<div class="empty"><i class="ti ti-folder-star"></i><p>No hay Casos ADM.</p></div>';return;}
+  el.innerHTML=data.map(c=>casoCard(c,'adm')).join('');
+}
+function renderCasosStaff(){
+  const fE=v('fCasoStaffEst'),fC=v('fCasoStaffCat');
+  let data=(DB.casosStaff||[]).filter(c=>(!fE||c.est===fE)&&(!fC||c.cat===fC));
+  const el=document.getElementById('casosStaffList');
+  if(!el)return;
+  if(!data.length){el.innerHTML='<div class="empty"><i class="ti ti-folder-share"></i><p>No hay Casos Staff.</p></div>';return;}
+  el.innerHTML=data.map(c=>casoCard(c,'staff')).join('');
+}
+function openCasoModal(tipo){
+  clr('cEId','cTit','cInv','cDesc','cRes');v2('cTipo',tipo);
+  document.getElementById('mCasoTitle').textContent=tipo==='adm'?'Nuevo Caso ADM':'Nuevo Caso Staff';
+  openM('mCaso');
+}
+function saveCaso(){
+  const id=v('cEId'),tipo=v('cTipo')||'adm';
+  const obj={id:id||uid(),tit:v('cTit').trim(),cat:v('cCat'),est:v('cEst'),inv:v('cInv'),desc:v('cDesc'),res:v('cRes'),ts:now()};
+  if(!obj.tit)return alert('Título obligatorio');
+  if(!DB.casosAdm)DB.casosAdm=[];
+  if(!DB.casosStaff)DB.casosStaff=[];
+  const arr=tipo==='adm'?DB.casosAdm:DB.casosStaff;
+  if(id){const i=arr.findIndex(x=>x.id===id);arr[i]={...arr[i],...obj};}
+  else{arr.unshift(obj);hist(`Caso ${tipo.toUpperCase()}: ${obj.tit}`);}
+  saveDB();
+  if(tipo==='adm')renderCasosAdm(); else renderCasosStaff();
+  closeM('mCaso');renderDash();
+  clr('cEId','cTit','cInv','cDesc','cRes');
+}
+function editCaso(id,tipo){
+  if(!DB.casosAdm)DB.casosAdm=[];if(!DB.casosStaff)DB.casosStaff=[];
+  const arr=tipo==='adm'?DB.casosAdm:DB.casosStaff;
+  const c=arr.find(x=>x.id===id);if(!c)return;
+  v2('cEId',c.id);v2('cTipo',tipo);v2('cTit',c.tit);v2('cCat',c.cat);v2('cEst',c.est);v2('cInv',c.inv||'');v2('cDesc',c.desc||'');v2('cRes',c.res||'');
+  document.getElementById('mCasoTitle').textContent=tipo==='adm'?'Editar Caso ADM':'Editar Caso Staff';
+  openM('mCaso');
+}
+function delCaso(id,tipo){
+  if(!confirm('¿Eliminar caso?'))return;
+  if(!DB.casosAdm)DB.casosAdm=[];if(!DB.casosStaff)DB.casosStaff=[];
+  const arr=tipo==='adm'?DB.casosAdm:DB.casosStaff;
+  const c=arr.find(x=>x.id===id);
+  if(tipo==='adm')DB.casosAdm=DB.casosAdm.filter(x=>x.id!==id);
+  else DB.casosStaff=DB.casosStaff.filter(x=>x.id!==id);
+  hist(`Caso ${tipo.toUpperCase()} eliminado: ${c?.tit||id}`);saveDB();
+  if(tipo==='adm')renderCasosAdm(); else renderCasosStaff();
+  renderDash();
+}
+
+// ══ TAREAS ══
+function renderTareas(){
+  const fE=v('fTareaEst'),fP=v('fTareaPrio');
+  let data=DB.tareas.filter(t=>(!fE||t.est===fE)&&(!fP||t.prio===fP));
+  const el=document.getElementById('tareasList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="ti ti-checklist"></i><p>No hay tareas.</p></div>';return;}
+  el.innerHTML=data.map(t=>`
+    <div class="tareaItem">
+      <div class="tCheck ${t.est==='Completada'?'done':''}" onclick="toggleTarea('${t.id}')"></div>
+      <div class="tContent">
+        <div class="tTitle ${t.est==='Completada'?'done':''}">${t.tit}</div>
+        ${t.desc?`<div class="tDesc">${t.desc}</div>`:''}
+        <div class="tMeta">
+          <span class="badge ${t.prio==='Alta'?'b-red':t.prio==='Media'?'b-yellow':'b-green'}">${t.prio}</span>
+          <span class="badge ${t.est==='Completada'?'b-green':t.est==='En progreso'?'b-blue':'b-gray'}">${t.est}</span>
+          ${t.resp?`<span class="badge b-purple"><i class="ti ti-user" style="font-size:11px"></i> ${t.resp}</span>`:''}
+        </div>
+      </div>
+      <div style="display:flex;gap:3px">
+        <button class="iconBtn" onclick="editTarea('${t.id}')"><i class="ti ti-edit"></i></button>
+        <button class="iconBtn danger" onclick="delTarea('${t.id}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('');
+}
+function saveTarea(){
+  const id=v('tEId');
+  const obj={id:id||uid(),tit:v('tTit').trim(),prio:v('tPrio'),est:v('tEst'),resp:v('tResp'),desc:v('tDesc'),ts:now()};
+  if(!obj.tit)return alert('Título obligatorio');
+  if(id){const i=DB.tareas.findIndex(x=>x.id===id);DB.tareas[i]=obj;}
+  else{DB.tareas.unshift(obj);hist(`Tarea añadida: ${obj.tit}`);}
+  saveDB();renderTareas();updateBadges();closeM('mTarea');renderDash();
+  clr('tEId','tTit','tResp','tDesc');
+}
+function editTarea(id){
+  const t=DB.tareas.find(x=>x.id===id);
+  v2('tEId',t.id);v2('tTit',t.tit);v2('tPrio',t.prio);v2('tEst',t.est);v2('tResp',t.resp||'');v2('tDesc',t.desc||'');openM('mTarea');
+}
+function toggleTarea(id){
+  const t=DB.tareas.find(x=>x.id===id);
+  t.est=t.est==='Completada'?'Pendiente':'Completada';
+  hist(`Tarea ${t.est==='Completada'?'completada':'reabierta'}: ${t.tit}`);saveDB();renderTareas();updateBadges();renderDash();
+}
+function delTarea(id){if(!confirm('¿Eliminar?'))return;const t=DB.tareas.find(x=>x.id===id);DB.tareas=DB.tareas.filter(x=>x.id!==id);hist(`Tarea eliminada: ${t.tit}`);saveDB();renderTareas();updateBadges();renderDash();}
+
+// ══ NOTAS ══
+function renderNotas(){
+  const fC=v('fNotaCat');
+  let data=DB.notas.filter(n=>!fC||n.cat===fC);
+  const el=document.getElementById('notasList');
+  if(!data.length){el.innerHTML='<div class="empty"><i class="ti ti-notebook"></i><p>No hay notas.</p></div>';return;}
+  const bc={General:'b-blue',Privada:'b-purple',Staff:'b-cyan',Recordatorio:'b-yellow'};
+  el.innerHTML=data.map(n=>`
+    <div class="noteCard">
+      <div class="noteActions">
+        <button class="iconBtn" onclick="editNota('${n.id}')"><i class="ti ti-edit"></i></button>
+        <button class="iconBtn danger" onclick="delNota('${n.id}')"><i class="ti ti-trash"></i></button>
+      </div>
+      <div class="noteTitle">${n.tit} <span class="badge ${bc[n.cat]||'b-gray'}">${n.cat}</span></div>
+      <div class="noteBody">${n.body.replace(/\n/g,'<br>')}</div>
+      <div class="noteMeta">${n.ts}</div>
+    </div>`).join('');
+}
+function saveNota(){
+  const id=v('nEId');
+  const obj={id:id||uid(),tit:v('nTit').trim(),cat:v('nCat'),body:v('nBody'),ts:now()};
+  if(!obj.tit||!obj.body)return alert('Título y contenido obligatorios');
+  if(id){const i=DB.notas.findIndex(x=>x.id===id);DB.notas[i]=obj;hist(`Nota editada: ${obj.tit}`);}
+  else{DB.notas.unshift(obj);hist(`Nueva nota: ${obj.tit}`);}
+  saveDB();renderNotas();closeM('mNota');clr('nEId','nTit','nBody');
+}
+function editNota(id){const n=DB.notas.find(x=>x.id===id);v2('nEId',n.id);v2('nTit',n.tit);v2('nCat',n.cat);v2('nBody',n.body);openM('mNota');}
+function delNota(id){if(!confirm('¿Eliminar nota?'))return;const n=DB.notas.find(x=>x.id===id);DB.notas=DB.notas.filter(x=>x.id!==id);hist(`Nota eliminada: ${n.tit}`);saveDB();renderNotas();}
+
+// ══ RANGOS ══
+function renderRangos(){
+  const el=document.getElementById('rangosList');
+  if(!DB.rangos.length){el.innerHTML='<div class="empty"><i class="ti ti-shield"></i><p>Sin rangos.</p></div>';return;}
+  el.innerHTML=[...DB.rangos].sort((a,b)=>a.niv-b.niv).map(r=>`
+    <div class="rangoCard">
+      <div class="rangoNum">${r.niv}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${r.nom}</div><div style="font-size:11px;color:var(--text2);margin-top:2px">${r.desc}</div></div>
+      <button class="iconBtn danger" onclick="delRango('${r.id}')"><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+}
+function renderStaffByRango(){
+  const el=document.getElementById('staffByRango');
+  const rangos=[...new Set(DB.staff.map(s=>s.rng).filter(Boolean))];
+  if(!rangos.length){el.innerHTML='<div class="empty"><i class="ti ti-users"></i><p>Sin staff registrado.</p></div>';return;}
+  el.innerHTML=rangos.map(rng=>{
+    const miembros=DB.staff.filter(s=>s.rng===rng);
+    return`<div style="margin-bottom:.8rem">
+      <div style="font-size:11px;font-weight:700;color:var(--text2);letter-spacing:.5px;text-transform:uppercase;margin-bottom:.4rem">${rng} (${miembros.length})</div>
+      ${miembros.map(m=>`<div style="display:flex;align-items:center;gap:8px;padding:5px 0">
+        <div class="dot ${m.est==='Activo'?'active':'inactive'}"></div>
+        <span style="font-size:13px;font-weight:500">${m.nom}</span>
+        <span class="badge ${m.cat==='ER:LC'?'b-er':'b-discord'}" style="font-size:10px">${m.cat}</span>
+      </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+function saveRango(){
+  const obj={id:uid(),nom:v('rgNom').trim(),niv:parseInt(v('rgNiv'))||1,desc:v('rgDesc')};
+  if(!obj.nom)return alert('Nombre obligatorio');
+  DB.rangos.push(obj);hist(`Rango creado: ${obj.nom}`);saveDB();renderRangos();renderStaffByRango();closeM('mRango');clr('rgNom','rgNiv','rgDesc');
+}
+function delRango(id){if(!confirm('¿Eliminar rango?'))return;const r=DB.rangos.find(x=>x.id===id);DB.rangos=DB.rangos.filter(x=>x.id!==id);hist(`Rango eliminado: ${r.nom}`);saveDB();renderRangos();}
+
+// ══ REPORTES ══
+function renderReportes(){
+  const fE=v('fRepEst');
+  let data=DB.reportes.filter(r=>!fE||r.est===fE);
+  const tb=document.getElementById('repTable');
+  if(!data.length){tb.innerHTML=`<tr><td colspan="7" class="empty" style="padding:2rem"><i class="ti ti-flag" style="display:block;font-size:24px;margin-bottom:.5rem;opacity:.3"></i>Sin reportes</td></tr>`;return;}
+  tb.innerHTML=data.map((r,i)=>`
+    <tr>
+      <td style="color:var(--text3);font-weight:600">#${i+1}</td>
+      <td style="font-weight:600">${r.tit}</td>
+      <td><span class="badge b-blue">${r.cat}</span></td>
+      <td><select onchange="cambiarRepEst('${r.id}',this.value)" style="background:var(--bg3);border:1px solid var(--border2);border-radius:6px;padding:4px 8px;color:var(--text);font-size:12px;font-family:var(--font)">
+        <option${r.est==='Pendiente'?' selected':''}>Pendiente</option>
+        <option${r.est==='En revisión'?' selected':''}>En revisión</option>
+        <option${r.est==='Resuelto'?' selected':''}>Resuelto</option>
+      </select></td>
+      <td>${r.resp||'-'}</td>
+      <td style="font-size:11px;color:var(--text3)">${r.ts}</td>
+      <td><button class="iconBtn danger" onclick="delReporte('${r.id}')"><i class="ti ti-trash"></i></button></td>
+    </tr>`).join('');
+  updateBadges();
+}
+function saveReporte(){
+  const obj={id:uid(),tit:v('rpTit').trim(),cat:v('rpCat'),est:v('rpEst'),resp:v('rpResp'),desc:v('rpDesc'),ts:now()};
+  if(!obj.tit)return alert('Título obligatorio');
+  DB.reportes.unshift(obj);hist(`Reporte: ${obj.tit}`);saveDB();renderReportes();closeM('mReporte');clr('rpTit','rpResp','rpDesc');renderDash();
+}
+function cambiarRepEst(id,est){const r=DB.reportes.find(x=>x.id===id);r.est=est;hist(`Reporte actualizado: ${r.tit} → ${est}`);saveDB();updateBadges();}
+function delReporte(id){if(!confirm('¿Eliminar?'))return;DB.reportes=DB.reportes.filter(x=>x.id!==id);saveDB();renderReportes();}
+
+// ══ REUNIONES ══
+function renderReuniones(){
+  const el=document.getElementById('reunionesList');
+  if(!DB.reuniones.length){el.innerHTML='<div class="empty"><i class="ti ti-file-text"></i><p>No hay actas.</p></div>';return;}
+  el.innerHTML=DB.reuniones.map(r=>`
+    <div class="card" style="margin-bottom:.8rem">
+      <div style="display:flex;align-items:center;gap:12px">
+        <div style="width:40px;height:40px;border-radius:10px;background:var(--accent)18;color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0"><i class="ti ti-file-text"></i></div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700;letter-spacing:-.2px">${r.tit}</div>
+          <div style="font-size:12px;color:var(--text2);margin-top:2px">${r.fecha||''} · ${r.asis||'Sin asistentes'}</div>
+        </div>
+        <button class="btn btn-sm" onclick="verReunion('${r.id}')"><i class="ti ti-eye"></i> Ver</button>
+        <button class="iconBtn danger" onclick="delReunion('${r.id}')"><i class="ti ti-trash"></i></button>
+      </div>
+    </div>`).join('');
+}
+function saveReunion(){
+  const obj={id:uid(),tit:v('rnTit').trim(),fecha:v('rnFecha'),asis:v('rnAsis'),temas:v('rnTemas'),acuerdo:v('rnAcuerdo'),seg:v('rnSeg'),ts:now()};
+  if(!obj.tit)return alert('Título obligatorio');
+  DB.reuniones.unshift(obj);hist(`Acta: ${obj.tit}`);saveDB();renderReuniones();closeM('mReunion');
+  clr('rnTit','rnFecha','rnAsis','rnTemas','rnAcuerdo','rnSeg');
+}
+function verReunion(id){
+  const r=DB.reuniones.find(x=>x.id===id);
+  document.getElementById('reunionDetalle').innerHTML=`
+    <h3 style="font-size:16px;font-weight:700;margin-bottom:.3rem">${r.tit}</h3>
+    <div style="font-size:12px;color:var(--text2);margin-bottom:1rem">${r.fecha||'Sin fecha'} · ${r.ts}</div>
+    ${r.asis?`<div class="sep"></div><div style="font-size:12px"><b style="color:var(--text)">Asistentes</b><br>${r.asis}</div>`:''}
+    ${r.temas?`<div class="sep"></div><div style="font-size:12px"><b style="color:var(--text)">Temas</b><br>${r.temas.replace(/\n/g,'<br>')}</div>`:''}
+    ${r.acuerdo?`<div class="sep"></div><div style="font-size:12px"><b style="color:var(--text)">Acuerdos</b><br>${r.acuerdo.replace(/\n/g,'<br>')}</div>`:''}
+    ${r.seg?`<div class="sep"></div><div style="font-size:12px"><b style="color:var(--text)">Seguimiento</b><br>${r.seg.replace(/\n/g,'<br>')}</div>`:''}`;
+  openM('mVerReunion');
+}
+function delReunion(id){if(!confirm('¿Eliminar acta?'))return;DB.reuniones=DB.reuniones.filter(x=>x.id!==id);saveDB();renderReuniones();}
+
+// ══ CALENDARIO ══
+function renderCal(){
+  const y=calD.getFullYear(),m=calD.getMonth();
+  const ms=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  s('calLabel',ms[m]+' '+y);
+  const first=new Date(y,m,1);const last=new Date(y,m+1,0);
+  let dow=first.getDay();if(dow===0)dow=7;
+  const cells=[];
+  for(let i=1;i<dow;i++)cells.push({d:new Date(y,m,1-dow+i),o:true});
+  for(let d=1;d<=last.getDate();d++)cells.push({d:new Date(y,m,d),o:false});
+  while(cells.length%7)cells.push({d:new Date(y,m+1,cells.length-last.getDate()-dow+2),o:true});
+  const today=new Date();
+  const typs={Reunión:'blue',Evento:'green',Capacitación:'orange',Recordatorio:'red'};
+  document.getElementById('calGrid').innerHTML=cells.map(c=>{
+    const ds=c.d.toISOString().substr(0,10);
+    const evs=DB.eventos.filter(e=>e.fecha===ds);
+    const isT=c.d.toDateString()===today.toDateString();
+    return`<div class="calCell${isT?' today':''}${c.o?' other':''}" onclick="selDay('${ds}')">
+      <div class="cDay">${c.d.getDate()}</div>
+      ${evs.map(e=>`<div class="cEv ev-${typs[e.tipo]||'blue'}" title="${e.tit}">${e.tit}</div>`).join('')}
+    </div>`;
+  }).join('');
+  const prox=DB.eventos.filter(e=>new Date(e.fecha)>=new Date()).sort((a,b)=>new Date(a.fecha)-new Date(b.fecha)).slice(0,5);
+  const pe=document.getElementById('proxEvs');
+  if(!prox.length){pe.innerHTML='<div class="empty" style="padding:1rem"><p>Sin eventos próximos</p></div>';return;}
+  pe.innerHTML=prox.map(e=>{
+    const d=new Date(e.fecha+'T12:00');
+    return`<div style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--border)">
+      <div style="background:var(--accent)18;border-radius:8px;padding:6px 10px;text-align:center;min-width:42px">
+        <div style="font-size:16px;font-weight:800;color:var(--accent)">${d.getDate()}</div>
+        <div style="font-size:10px;color:var(--text2)">${ms[d.getMonth()].substr(0,3)}</div>
+      </div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:600">${e.tit}</div><div style="font-size:11px;color:var(--text2)">${e.tipo}${e.hora?' · '+e.hora:''}</div></div>
+      <button class="iconBtn danger" onclick="delEvento('${e.id}')"><i class="ti ti-trash"></i></button>
+    </div>`;
+  }).join('');
+}
+function calPrev(){calD=new Date(calD.getFullYear(),calD.getMonth()-1,1);renderCal();}
+function calNext(){calD=new Date(calD.getFullYear(),calD.getMonth()+1,1);renderCal();}
+function selDay(ds){v2('evFech',ds);openM('mEvento');}
+function saveEvento(){
+  const obj={id:uid(),tit:v('evTit').trim(),fecha:v('evFech'),tipo:v('evTipo'),hora:v('evHora'),desc:v('evDesc'),ts:now()};
+  if(!obj.tit||!obj.fecha)return alert('Título y fecha obligatorios');
+  DB.eventos.push(obj);hist(`Evento: ${obj.tit} (${obj.fecha})`);saveDB();renderCal();closeM('mEvento');clr('evTit','evFech','evHora','evDesc');
+}
+function delEvento(id){if(!confirm('¿Eliminar evento?'))return;DB.eventos=DB.eventos.filter(x=>x.id!==id);saveDB();renderCal();}
+
+// ══ AVISOS ══
+function renderAvisos(){
+  const el=document.getElementById('avisosList');
+  if(!DB.avisos.length){el.innerHTML='<div class="empty"><i class="ti ti-bell"></i><p>Sin avisos.</p></div>';return;}
+  el.innerHTML=DB.avisos.map(a=>`
+    <div class="alertBox ${a.tipo}" style="margin-bottom:.6rem">
+      <i class="ti ti-bell"></i>
+      <div class="alertText"><b>${a.tit}</b><br><span style="font-size:12px">${a.msg}</span></div>
+      <button class="alertClose" onclick="delAviso('${a.id}')"><i class="ti ti-trash"></i></button>
+    </div>`).join('');
+}
+function saveAviso(){
+  const obj={id:uid(),tit:v('avTit').trim(),msg:v('avMsg'),tipo:v('avTipo'),ts:now()};
+  if(!obj.tit)return alert('Título obligatorio');
+  DB.avisos.unshift(obj);hist(`Aviso: ${obj.tit}`);saveDB();renderAvisos();renderDash();closeM('mAviso');clr('avTit','avMsg');
+}
+function delAviso(id){DB.avisos=DB.avisos.filter(x=>x.id!==id);saveDB();renderAvisos();renderDash();}
+
+// ══ HISTORIAL ══
+function renderHist(){
+  const el=document.getElementById('histList');
+  if(!DB.hist.length){el.innerHTML='<div class="empty"><i class="ti ti-history"></i><p>Sin registros.</p></div>';return;}
+  el.innerHTML=DB.hist.map(h=>`<div class="actItem"><div class="actDot"></div><div><div class="actText">${h.txt}</div><div class="actTime">${h.ts} · ${h.u}</div></div></div>`).join('');
+}
+
+// ══ BADGES ══
+function updateBadges(){
+  const rp=DB.reportes.filter(r=>r.est==='Pendiente').length;
+  const ta=DB.tareas.filter(t=>t.est==='Pendiente').length;
+  const br=document.getElementById('badgeRep');
+  const bt=document.getElementById('badgeTareas');
+  br.textContent=rp;br.style.display=rp?'':'none';
+  bt.textContent=ta;bt.style.display=ta?'':'none';
+}
+
+// ══ CONFIG ══
+function saveConfig(){
+  const n=v('cfgName'),d=v('cfgDesc'),p1=v('cfgP1'),p2=v('cfgP2'),p3=v('cfgP3');
+  const msg=document.getElementById('cfgMsg');
+  if(n){DB.config.name=n;s('sbName',n);}
+  if(d)DB.config.desc=d;
+  if(p1||p2||p3){
+    const u=DB.users.find(x=>x.user===cu.user);
+    if(u.pass!==p1){msg.style.color='var(--red)';msg.textContent='Contraseña actual incorrecta';return;}
+    if(p2!==p3){msg.style.color='var(--red)';msg.textContent='Las contraseñas no coinciden';return;}
+    if(p2.length<3){msg.style.color='var(--red)';msg.textContent='Contraseña muy corta';return;}
+    u.pass=p2;hist('Contraseña cambiada');
+  }
+  saveDB();msg.style.color='var(--green)';msg.textContent='Guardado correctamente';
+  setTimeout(()=>{msg.textContent='';},2500);clr('cfgP1','cfgP2','cfgP3');
+}
+
+// ══ INIT ══
+(async ()=>{ await loadDB(); })();
+</script>
+</body>
+</html>
